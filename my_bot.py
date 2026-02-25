@@ -45,16 +45,18 @@ import os
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route("/")
 def home():
     return "Bot is running"
 
 def run_web():
-    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 10000)))
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
 
-# Запускаем веб-сервер
-threading.Thread(target=run_web).start()
+# Сначала поднимаем веб-сервер в отдельном потоке
+threading.Thread(target=run_web, daemon=True).start()
 
-# Запускаем бота
-bot.polling()
+# Потом запускаем бота (это блокирующий вызов)
+bot.infinity_polling()
+
 
