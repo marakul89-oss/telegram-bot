@@ -43,7 +43,7 @@ import threading
 from flask import Flask
 import os
 
-app = Flask(name)
+app = Flask(__name__)
 
 @app.route('/')
 def home():
@@ -57,3 +57,4 @@ threading.Thread(target=run_web).start()
 
 # Запускаем бота
 bot.polling()
+
