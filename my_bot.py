@@ -39,5 +39,21 @@ def offer(message):
 def contact(message):
     bot.send_message(message.chat.id, "Mara102@mail.ru")
 
+import threading
+from flask import Flask
+import os
+
+app = Flask(name)
+
+@app.route('/')
+def home():
+    return "Bot is running"
+
+def run_web():
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 10000)))
+
+# Запускаем веб-сервер
+threading.Thread(target=run_web).start()
+
 # Запускаем бота
 bot.polling()
