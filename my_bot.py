@@ -10,9 +10,9 @@ bot = telebot.TeleBot('8311827359:AAHViPd8fAk0hRMVmmHJNtro4VxhlmHf2_4')
 def start(message):
     # Создаем клавиатуру с кнопками
     markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)  # Создаем клавиатуру
-    item1 = types.KeyboardButton("Цена")  # Кнопка для прайса
-    item2 = types.KeyboardButton("Договор оферты")  # Кнопка для договора
-    item3 = types.KeyboardButton("Обратная связь")  # Кнопка для обратной связи
+    item1 = types.KeyboardButton("Получить гайд")
+    item2 = types.KeyboardButton("Оферта")
+    item3 = types.KeyboardButton("Поддержка")
 
     markup.add(item1, item2, item3)  # Добавляем кнопки на клавиатуру
 
@@ -58,5 +58,6 @@ threading.Thread(target=run_web, daemon=True).start()
 
 # Потом запускаем бота (это блокирующий вызов)
 bot.infinity_polling()
+
 
 
