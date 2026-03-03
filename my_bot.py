@@ -71,7 +71,14 @@ from flask import Flask
 import os
 
 app = Flask(__name__)
+from flask import request
 
+@app.route("/robokassa/result", methods=["POST"])
+def robokassa_result():
+    # Пока просто отвечаем Робокассе "ОК", чтобы она видела живой обработчик.
+    # Проверку подписи и выдачу гайда добавим следующим шагом.
+    inv_id = request.form.get("InvId", "")
+    return f"OK{inv_id}", 200
 @app.route("/")
 def home():
     return "Bot is running"
@@ -85,6 +92,7 @@ threading.Thread(target=run_web, daemon=True).start()
 
 # Потом запускаем бота (это блокирующий вызов)
 bot.infinity_polling()
+
 
 
 
