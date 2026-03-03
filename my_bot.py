@@ -24,20 +24,47 @@ def start(message):
         reply_markup=markup
     )
 
-# Обработчик кнопки "Цена"
-@bot.message_handler(func=lambda message: message.text == "Цена")
-def price(message):
-    bot.send_message(message.chat.id, "Цена за гайд: 690 рублей.")
+# Обработчик кнопки "Получить гайд"
+@bot.message_handler(func=lambda message: message.text == "Получить гайд")
+def get_guide(message):
+    text = (
+        "«База для новичков» + создание ИИ-аватара\n\n"
+        "Что внутри:\n"
+        "• список актуальных нейросетей и сервисов — как ими пользоваться и где оплачивать\n"
+        "• разбор агрегаторов, через которые удобно работать с нейросетями\n"
+        "• пошаговое создание реалистичного ИИ-аватара с нуля\n"
+        "• понимание, как превратить это в источник дохода и на каких площадках размещать контент\n\n"
+        "Подойдёт даже если вы начинаете с полного нуля.\n\n"
+        "Стоимость доступа — 690 ₽."
+    )
 
-# Обработчик кнопки "Договор оферты"
-@bot.message_handler(func=lambda message: message.text == "Договор оферты")
+    pay_markup = types.InlineKeyboardMarkup()
+    pay_markup.add(
+        types.InlineKeyboardButton(
+            "Перейти к оплате",
+            url="https://rbksa.ru/b/LlcAftUVbki0TAFRkTqREA"
+        )
+    )
+
+    bot.send_message(message.chat.id, text, reply_markup=pay_markup)
+
+
+# Обработчик кнопки "Оферта"
+@bot.message_handler(func=lambda message: message.text == "Оферта")
 def offer(message):
-    bot.send_message(message.chat.id, "https://docs.google.com/document/d/17eEBGv6G-LzUcZpyvygfLzJT-W_BloOs/edit?usp=sharing&ouid=107708342823288631650&rtpof=true&sd=true")
+    bot.send_message(
+    message.chat.id,
+    "Договор оферты:\nhttps://docs.google.com/document/d/17eEBGv6G-LzUcZpyvygfLzJT-W_BloOs/preview"
+)
 
-# Обработчик кнопки "Обратная связь"
-@bot.message_handler(func=lambda message: message.text == "Обратная связь")
-def contact(message):
-    bot.send_message(message.chat.id, "Mara102@mail.ru")
+
+# Обработчик кнопки "Поддержка"
+@bot.message_handler(func=lambda message: message.text == "Поддержка")
+def support(message):
+    bot.send_message(
+        message.chat.id,
+        "Поддержка:\nMara102@mail.ru"
+    )
 
 import threading
 from flask import Flask
@@ -58,6 +85,7 @@ threading.Thread(target=run_web, daemon=True).start()
 
 # Потом запускаем бота (это блокирующий вызов)
 bot.infinity_polling()
+
 
 
 
