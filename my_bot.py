@@ -73,11 +73,26 @@ import os
 app = Flask(__name__)
 from flask import request
 
+import hashlib
+
+PAID_INV_IDS = set()
+
 @app.route("/robokassa/result", methods=["POST"])
 def robokassa_result():
-    # Пока просто отвечаем Робокассе "ОК", чтобы она видела живой обработчик.
-    # Проверку подписи и выдачу гайда добавим следующим шагом.
+
+    out_sum = request.form.get("OutSum", "")
     inv_id = request.form.get("InvId", "")
+    signature = request.form.get("SignatureValue", "").upper()
+
+    password2 = os.environ.get("ROBOKASSA_PASSWORD2", "")
+
+    check = hashlib.md5(f"{out_sum}:{inv_id}:{password2}".encode()).hexdigest().upper()
+
+    if signature != check:
+        return "bad sign", 400
+
+    PAID_INV_IDS.add(inv_id)
+
     return f"OK{inv_id}", 200
 @app.route("/")
 def home():
@@ -92,6 +107,7 @@ threading.Thread(target=run_web, daemon=True).start()
 
 # Потом запускаем бота (это блокирующий вызов)
 bot.infinity_polling()
+
 
 
 
