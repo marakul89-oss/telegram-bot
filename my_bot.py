@@ -37,18 +37,78 @@ def get_guide(message):
         "Подойдёт даже если вы начинаете с полного нуля.\n\n"
         "Стоимость доступа — 690 ₽."
     )
+chat_id = message.chat.id
 
-    pay_markup = types.InlineKeyboardMarkup()
-    pay_markup.add(
-        types.InlineKeyboardButton(
-            "Перейти к оплате",
-            url="https://rbksa.ru/b/LlcAftUVbki0TAFRkTqREA"
-        )
+merchant_login = os.environ.get("MERCHANT_LOGIN", "")
+password1 = os.environ.get("ROBOKASSA_PASSWORD1", "")
+
+out_sum = "690"
+inv_id = str(int(time.time()))
+
+# запоминаем счет пользователя
+PENDING_INV_BY_CHAT[chat_id] = inv_id
+
+desc = "Гайд (доступ)"
+
+signature = hashlib.md5(
+    f"{merchant_login}:{out_sum}:{inv_id}:{password1}".encode()
+).hexdigest()
+
+pay_url = (
+    "https://auth.robokassa.ru/Merchant/Index.aspx"
+    f"?MerchantLogin={merchant_login}"
+    f"&OutSum={out_sum}"
+    f"&InvId={inv_id}"
+    f"&Description={desc}"
+    f"&SignatureValue={signature}"
+)
+   pay_markup = types.InlineKeyboardMarkup()
+
+pay_markup.add(
+    types.InlineKeyboardButton(
+    "Перейти к оплате",
+    url=pay_url
+)
+)
+
+pay_markup.add(
+    types.InlineKeyboardButton(
+        "Я оплатил",
+        callback_data="check_payment"
     )
-
+)
+pay_markup.add(
+    types.InlineKeyboardButton(
+        "Не пришла ссылка / Поддержка",
+        callback_data="support_payment"
+    )
+)
     bot.send_message(message.chat.id, text, reply_markup=pay_markup)
+@bot.callback_query_handler(func=lambda call: call.data == "check_payment")
+def check_payment(call):
 
+    if len(PAID_INV_IDS) > 0:
 
+        bot.send_message(
+            call.message.chat.id,
+            "✅ Оплата найдена!\n\nВот ваш гайд:\nhttps://drive.google.com/file/d/guide"
+        )
+
+    else:
+
+        bot.send_message(
+            call.message.chat.id,
+            "❌ Оплата пока не найдена.\n\nЕсли вы только что оплатили — подождите 10–20 секунд и нажмите кнопку снова."
+        )
+@bot.callback_query_handler(func=lambda call: call.data == "support_payment")
+def support_payment(call):
+    bot.send_message(
+        call.message.chat.id,
+        "Если вы оплатили, но ссылка не пришла:\n\n"
+        "1. Подождите 30–60 секунд и нажмите «Я оплатил» ещё раз.\n"
+        "2. Если ссылка не появилась — напишите в поддержку.\n\n"
+        "Поддержка: @MarK_K13"
+    )
 # Обработчик кнопки "Оферта"
 @bot.message_handler(func=lambda message: message.text == "Оферта")
 def offer(message):
@@ -76,7 +136,7 @@ from flask import request
 import hashlib
 
 PAID_INV_IDS = set()
-
+PENDING_INV_BY_CHAT = {}  # chat_id -> inv_id (какой счёт выдали этому человеку)
 @app.route("/robokassa/result", methods=["POST"])
 def robokassa_result():
 
@@ -107,6 +167,7 @@ threading.Thread(target=run_web, daemon=True).start()
 
 # Потом запускаем бота (это блокирующий вызов)
 bot.infinity_polling()
+
 
 
 
