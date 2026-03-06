@@ -62,7 +62,7 @@ pay_url = (
     f"&Description={desc}"
     f"&SignatureValue={signature}"
 )
-   pay_markup = types.InlineKeyboardMarkup()
+pay_markup = types.InlineKeyboardMarkup()
 
 pay_markup.add(
     types.InlineKeyboardButton(
@@ -167,6 +167,7 @@ threading.Thread(target=run_web, daemon=True).start()
 
 # Потом запускаем бота (это блокирующий вызов)
 bot.infinity_polling()
+
 
 
 
