@@ -83,7 +83,7 @@ pay_markup.add(
         callback_data="support_payment"
     )
 )
-    bot.send_message(message.chat.id, text, reply_markup=pay_markup)
+bot.send_message(message.chat.id, text, reply_markup=pay_markup)
 @bot.callback_query_handler(func=lambda call: call.data == "check_payment")
 def check_payment(call):
 
@@ -167,6 +167,7 @@ threading.Thread(target=run_web, daemon=True).start()
 
 # Потом запускаем бота (это блокирующий вызов)
 bot.infinity_polling()
+
 
 
 
