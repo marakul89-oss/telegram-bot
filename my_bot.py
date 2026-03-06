@@ -65,6 +65,7 @@ def get_guide(message):
         f"&OutSum={out_sum}"
         f"&InvId={inv_id}"
         f"&Description={desc}"
+        f"&Receipt=%7B%22items%22%3A%5B%7B%22name%22%3A%22Guide%22%2C%22quantity%22%3A1%2C%22sum%22%3A690%2C%22payment_method%22%3A%22full_payment%22%2C%22payment_object%22%3A%22service%22%2C%22tax%22%3A%22none%22%7D%5D%7D"
         f"&SignatureValue={signature}"
     )
 
@@ -154,4 +155,5 @@ def run_web():
 
 threading.Thread(target=run_web, daemon=True).start()
 bot.infinity_polling()
+
 
