@@ -90,7 +90,7 @@ def check_payment(call):
     if inv_id and inv_id in PAID_INV_IDS:
         bot.send_message(
             chat_id,
-            "✅ Оплата найдена!\n\nВот ваш гайд:\nhttps://drive.google.com/file/d/guide"
+            "✅ Оплата найдена!\n\nВот ваш гайд:\nhttps://drive.google.com/file/d/1gS-Cgo9FR-MF5do7q8oyIvDXYV_qbI8W"
         )
     else:
         bot.send_message(
@@ -154,3 +154,4 @@ def run_web():
 
 threading.Thread(target=run_web, daemon=True).start()
 bot.infinity_polling()
+
