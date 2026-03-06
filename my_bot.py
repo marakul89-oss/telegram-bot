@@ -1,6 +1,9 @@
 
 import telebot
 from telebot import types
+import os
+import hashlib
+import time
 
 # Вставь сюда свой API токен, который дал BotFather
 bot = telebot.TeleBot('8311827359:AAHViPd8fAk0hRMVmmHJNtro4VxhlmHf2_4')
@@ -167,6 +170,7 @@ threading.Thread(target=run_web, daemon=True).start()
 
 # Потом запускаем бота (это блокирующий вызов)
 bot.infinity_polling()
+
 
 
 
