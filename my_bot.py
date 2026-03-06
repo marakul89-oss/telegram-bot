@@ -37,7 +37,7 @@ def get_guide(message):
         "Подойдёт даже если вы начинаете с полного нуля.\n\n"
         "Стоимость доступа — 690 ₽."
     )
-chat_id = message.chat.id
+    chat_id = message.chat.id
 
 merchant_login = os.environ.get("MERCHANT_LOGIN", "")
 password1 = os.environ.get("ROBOKASSA_PASSWORD1", "")
@@ -167,6 +167,7 @@ threading.Thread(target=run_web, daemon=True).start()
 
 # Потом запускаем бота (это блокирующий вызов)
 bot.infinity_polling()
+
 
 
 
