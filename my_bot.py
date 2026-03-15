@@ -52,7 +52,7 @@ def get_guide(message):
 
     desc = "Guide"
 
-    receipt_json = '{"items":[{"name":"Guide","quantity":1,"sum":1.00,"payment_method":"full_payment","payment_object":"service","tax":"none"}]}'
+    receipt_json = '{"items":[{"name":"Guide","quantity":1,"sum":10.00,"payment_method":"full_payment","payment_object":"service","tax":"none"}]}'
     receipt = quote(receipt_json, safe="")
 
     signature = hashlib.md5(
