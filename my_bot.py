@@ -56,7 +56,7 @@ def get_guide(message):
     receipt = quote(receipt_json, safe="")
 
     signature = hashlib.md5(
-        f"{merchant_login}:{out_sum}:{inv_id}:{receipt}:{password1}".encode("utf-8")
+        f"{merchant_login}:{out_sum}:{inv_id}:{receipt_json}:{password1}".encode("utf-8")
     ).hexdigest()
 
     pay_url = (
