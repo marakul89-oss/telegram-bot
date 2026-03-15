@@ -5,7 +5,7 @@ import hashlib
 import time
 import threading
 from flask import Flask, request
-
+from urllib.parse import quote
 app = Flask(__name__)
 
 PAID_INV_IDS = set()
@@ -45,15 +45,18 @@ def get_guide(message):
     merchant_login = os.environ.get("MERCHANT_LOGIN", "")
     password1 = os.environ.get("ROBOKASSA_PASSWORD1", "")
 
-    out_sum = "10.00"
+   out_sum = "10.00"
     inv_id = str(int(time.time()))
 
     PENDING_INV_BY_CHAT[chat_id] = inv_id
 
-    desc = "Gayd"
+    desc = "Guide"
+
+    receipt_json = '{"items":[{"name":"Guide","quantity":1,"sum":1.00,"payment_method":"full_payment","payment_object":"service","tax":"none"}]}'
+    receipt = quote(receipt_json, safe="")
 
     signature = hashlib.md5(
-        f"{merchant_login}:{out_sum}:{inv_id}:{password1}".encode()
+        f"{merchant_login}:{out_sum}:{inv_id}:{receipt}:{password1}".encode("utf-8")
     ).hexdigest()
 
     pay_url = (
@@ -62,6 +65,7 @@ def get_guide(message):
         f"&OutSum={out_sum}"
         f"&InvId={inv_id}"
         f"&Description={desc}"
+        f"&Receipt={receipt}"
         f"&SignatureValue={signature}"
     )
 
@@ -151,8 +155,3 @@ def run_web():
 
 threading.Thread(target=run_web, daemon=True).start()
 bot.infinity_polling()
-
-threading.Thread(target=run_web, daemon=True).start()
-bot.infinity_polling()
-
-
