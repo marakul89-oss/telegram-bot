@@ -89,13 +89,19 @@ def check_payment(call):
     inv_id = PENDING_INV_BY_CHAT.get(chat_id)
 
     if inv_id and inv_id in PAID_INV_IDS:
-        with open("Гайд для новичков_Создание ИИ Блогера (1).pdf", "rb") as file:
-            bot.send_document(
-        chat_id,
-        file,
-        caption="✅ Оплата найдена!\n\nВот ваш гайд.",
-        protect_content=True
-    )
+        guide_url = "https://drive.google.com/file/d/1gS-Cgo9FR-MF5do7q8oyIvDXYV_qbI8W/preview"
+
+        guide_markup = types.InlineKeyboardMarkup()
+        guide_markup.add(
+            types.InlineKeyboardButton("ОТКРЫТЬ ГАЙД", url=guide_url)
+)
+
+        bot.send_message(
+    chat_id,
+    "✅ Оплата найдена!\n\nНажмите кнопку, чтобы открыть гайд.",
+    reply_markup=guide_markup,
+    protect_content=True
+)
     else:
         bot.send_message(
             chat_id,
