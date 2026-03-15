@@ -9,12 +9,10 @@ from flask import Flask, request
 app = Flask(__name__)
 
 PAID_INV_IDS = set()
-PENDING_INV_BY_CHAT = {}  # chat_id -> inv_id
+PENDING_INV_BY_CHAT = {}
 
-# Вставь сюда свой API токен, который дал BotFather
 bot = telebot.TeleBot('8311827359:AAHViPd8fAk0hRMVmmHJNtro4VxhlmHf2_4')
 
-# Команда /start
 @bot.message_handler(commands=['start'])
 def start(message):
     markup = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
@@ -30,7 +28,6 @@ def start(message):
         reply_markup=markup
     )
 
-# Обработчик кнопки "Получить гайд"
 @bot.message_handler(func=lambda message: message.text == "Получить гайд")
 def get_guide(message):
     text = (
@@ -48,15 +45,17 @@ def get_guide(message):
     merchant_login = os.environ.get("MERCHANT_LOGIN", "")
     password1 = os.environ.get("ROBOKASSA_PASSWORD1", "")
 
-    out_sum = "690"
+    out_sum = "690.00"
     inv_id = str(int(time.time()))
 
     PENDING_INV_BY_CHAT[chat_id] = inv_id
 
-    desc = "Гайд (доступ)"
+    desc = "Gayd"
+
+    receipt = "%7B%22items%22%3A%5B%7B%22name%22%3A%22Guide%22%2C%22quantity%22%3A1%2C%22sum%22%3A690.00%2C%22payment_method%22%3A%22full_payment%22%2C%22payment_object%22%3A%22service%22%2C%22tax%22%3A%22none%22%7D%5D%7D"
 
     signature = hashlib.md5(
-        f"{merchant_login}:{out_sum}:{inv_id}:{password1}".encode()
+        f"{merchant_login}:{out_sum}:{inv_id}:{receipt}:{password1}".encode()
     ).hexdigest()
 
     pay_url = (
@@ -65,7 +64,7 @@ def get_guide(message):
         f"&OutSum={out_sum}"
         f"&InvId={inv_id}"
         f"&Description={desc}"
-        f"&Receipt=%7B%22items%22%3A%5B%7B%22name%22%3A%22Guide%22%2C%22quantity%22%3A1%2C%22sum%22%3A690%2C%22payment_method%22%3A%22full_payment%22%2C%22payment_object%22%3A%22service%22%2C%22tax%22%3A%22none%22%7D%5D%7D"
+        f"&Receipt={receipt}"
         f"&SignatureValue={signature}"
     )
 
@@ -91,7 +90,7 @@ def check_payment(call):
     if inv_id and inv_id in PAID_INV_IDS:
         bot.send_message(
             chat_id,
-            "✅ Оплата найдена!\n\nВот ваш гайд:\nhttps://drive.google.com/file/d/1gS-Cgo9FR-MF5do7q8oyIvDXYV_qbI8W"
+            "✅ Оплата найдена!\n\nВот ваш гайд:\nhttps://drive.google.com/file/d/guide"
         )
     else:
         bot.send_message(
@@ -152,6 +151,9 @@ def run_web():
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
 
+
+threading.Thread(target=run_web, daemon=True).start()
+bot.infinity_polling()
 
 threading.Thread(target=run_web, daemon=True).start()
 bot.infinity_polling()
