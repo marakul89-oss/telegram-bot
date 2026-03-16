@@ -45,14 +45,14 @@ def get_guide(message):
     merchant_login = os.environ.get("MERCHANT_LOGIN", "")
     password1 = os.environ.get("ROBOKASSA_PASSWORD1", "")
 
-    out_sum = "10.00"
+    out_sum = "690.00"
     inv_id = str(int(time.time()))
 
     PENDING_INV_BY_CHAT[chat_id] = inv_id
 
     desc = "Guide"
 
-    receipt_json = '{"items":[{"name":"Guide","quantity":1,"sum":10.00,"payment_method":"full_payment","payment_object":"service","tax":"none"}]}'
+    receipt_json = '{"items":[{"name":"Guide","quantity":1,"sum":690.00,"payment_method":"full_payment","payment_object":"service","tax":"none"}]}'
     receipt = quote(receipt_json, safe="")
 
     signature = hashlib.md5(
